@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Etherscan Address Tracker</title>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Etherscan Address Tracker</h1>
+    <input type="text" id="ethAddress" placeholder="Enter Ethereum address" />
+    <button onclick="trackAddress()">Track Address</button>
+    <div id="result"></div>
+
+    <script>
+        function trackAddress() {
+            const apiKey = '8YUX8ETXVV5Y6YNWCN6TECQXSXAZTVRFPS';
+            const address = document.getElementById('ethAddress').value;
+
+            const apiUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&apikey=${apiKey}`;
+
+            // Fetch data from Etherscan API
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === '1') {
+                        displayTransactions(data.result);
+                    } else {
+                        displayError(data.message);
+                    }
+                })
+                .catch(error => {
+                    displayError('An error occurred while fetching data.');
+                });
+        }
+
+        function displayTransactions(transactions) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            if (transactions.length === 0) {
+                resultDiv.textContent = 'No transactions found for this address.';
+                return;
+            }
+
+            // Display transactions
+            transactions.forEach(tx => {
+                const txDiv = document.createElement('div');
+                txDiv.textContent = `Tx Hash: ${tx.hash}, Value: ${tx.value} wei`;
+                resultDiv.appendChild(txDiv);
+            });
+        }
+
+        function displayError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<span style="color: red;">${message}</span>`;
+        }
+    </script>
+</body>
+</html>
