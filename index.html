@@ -13,7 +13,7 @@
 
     <script>
         function trackAddress() {
-            const apiKey = '8YUX8ETXVV5Y6YNWCN6TECQXSXAZTVRFPS';
+            const apiKey = 'YOUR_ETHERSCAN_API_KEY';
             const address = document.getElementById('ethAddress').value;
 
             const apiUrl = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&apikey=${apiKey}`;
@@ -23,7 +23,7 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.status === '1') {
-                        displayTransactions(data.result);
+                        displayTransactions(data.result.reverse());
                     } else {
                         displayError(data.message);
                     }
@@ -45,7 +45,8 @@
             // Display transactions
             transactions.forEach(tx => {
                 const txDiv = document.createElement('div');
-                txDiv.textContent = `Tx Hash: ${tx.hash}, Value: ${tx.value} wei`;
+                const txLink = `https://etherscan.io/tx/${tx.hash}`;
+                txDiv.innerHTML = `Tx Hash: <a href="${txLink}" target="_blank">${tx.hash}</a>, Value: ${tx.value} wei`;
                 resultDiv.appendChild(txDiv);
             });
         }
